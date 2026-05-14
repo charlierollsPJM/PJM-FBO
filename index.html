@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FBO Questionnaire — Private Jet Media</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8D5A0;
+    --dark: #0D0D0D;
+    --dark-2: #161616;
+    --dark-3: #1F1F1F;
+    --dark-4: #2A2A2A;
+    --text: #F0EDE6;
+    --text-muted: #8A8680;
+    --text-subtle: #4A4845;
+    --border: rgba(201,168,76,0.15);
+    --border-hover: rgba(201,168,76,0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,168,76,0.07) 0%, transparent 60%);
+  }
+
+  .page-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 52px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  .logo-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .logo-rule {
+    width: 40px;
+    height: 0.5px;
+    background: var(--gold);
+    opacity: 0.6;
+  }
+
+  .logo-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 6vw, 46px);
+    font-weight: 300;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .header-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 44px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  .section:nth-child(2) { animation-delay: 0.1s; }
+  .section:nth-child(3) { animation-delay: 0.18s; }
+  .section:nth-child(4) { animation-delay: 0.26s; }
+  .section:nth-child(5) { animation-delay: 0.34s; }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--border);
+  }
+
+  .field {
+    margin-bottom: 20px;
+  }
+
+  .field-label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    letter-spacing: 0.03em;
+  }
+
+  input[type=text],
+  textarea {
+    width: 100%;
+    background: var(--dark-3);
+    border: 0.5px solid var(--border);
+    border-radius: 4px;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    color: var(--text);
+    transition: border-color 0.2s;
+    outline: none;
+    appearance: none;
+  }
+
+  input[type=text]:focus,
+  textarea:focus {
+    border-color: var(--border-hover);
+    background: var(--dark-4);
+  }
+
+  input[type=text]::placeholder,
+  textarea::placeholder {
+    color: var(--text-subtle);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.6;
+  }
+
+  /* Pills */
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .pill {
+    padding: 7px 16px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    border: 0.5px solid var(--border);
+    border-radius: 2px;
+    cursor: pointer;
+    color: var(--text-muted);
+    background: var(--dark-3);
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .pill:hover {
+    border-color: var(--border-hover);
+    color: var(--text);
+  }
+
+  .pill.sel {
+    background: rgba(201,168,76,0.12);
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  /* Checkbox grid */
+  .chk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 7px;
+  }
+
+  .chk-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border: 0.5px solid var(--border);
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--dark-3);
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .chk-item:hover {
+    border-color: var(--border-hover);
+    color: var(--text);
+  }
+
+  .chk-item.sel {
+    background: rgba(201,168,76,0.1);
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  .chk-box {
+    width: 13px;
+    height: 13px;
+    border: 0.5px solid var(--text-subtle);
+    border-radius: 2px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .chk-item.sel .chk-box {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+
+  .chk-item.sel .chk-box::after {
+    content: '';
+    width: 7px;
+    height: 4px;
+    border-left: 1.5px solid var(--dark);
+    border-bottom: 1.5px solid var(--dark);
+    transform: rotate(-45deg) translateY(-1px);
+    display: block;
+  }
+
+  /* Month grid */
+  .month-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 7px;
+  }
+
+  @media(max-width: 480px) {
+    .month-grid { grid-template-columns: repeat(4, 1fr); }
+    .chk-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  .month-pill {
+    padding: 8px 0;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    border: 0.5px solid var(--border);
+    border-radius: 2px;
+    cursor: pointer;
+    color: var(--text-muted);
+    background: var(--dark-3);
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .month-pill:hover { border-color: var(--border-hover); color: var(--text); }
+  .month-pill.sel {
+    background: rgba(201,168,76,0.12);
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  /* Submit */
+  .submit-wrap {
+    margin-top: 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.42s forwards;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--gold);
+    color: var(--dark);
+    border: none;
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .submit-btn:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(201,168,76,0.2);
+  }
+
+  .submit-btn:active { transform: translateY(0); }
+
+  .submit-btn.loading {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  /* Success */
+  #success-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 24px;
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  .success-icon {
+    width: 56px;
+    height: 56px;
+    border: 0.5px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+  }
+
+  .success-icon svg { stroke: var(--gold); }
+
+  #success-screen h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+
+  #success-screen p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  /* Error */
+  .error-msg {
+    display: none;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #E06060;
+    text-align: center;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 60px;
+    font-size: 11px;
+    color: var(--text-subtle);
+    letter-spacing: 0.06em;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <div id="form-screen">
+    <div class="header">
+      <div class="logo-line">
+        <div class="logo-rule"></div>
+        <span class="logo-text">Private Jet Media</span>
+        <div class="logo-rule"></div>
+      </div>
+      <h1>FBO <em>Insight</em><br>Questionnaire</h1>
+      <p class="header-sub">Help us understand your FBO, your passengers, and the advertising landscape around you. Takes under two minutes.</p>
+    </div>
+
+    <!-- About the FBO -->
+    <div class="section">
+      <div class="section-label">About the FBO</div>
+      <div class="field">
+        <span class="field-label">FBO name *</span>
+        <input type="text" id="f-name" placeholder="e.g. Signature Aviation – Teterboro">
+      </div>
+      <div class="field">
+        <span class="field-label">Airport / ICAO code</span>
+        <input type="text" id="f-airport" placeholder="e.g. KTEB – Teterboro Airport, NJ">
+      </div>
+      <div class="field">
+        <span class="field-label">City / state</span>
+        <input type="text" id="f-location" placeholder="e.g. Teterboro, NJ">
+      </div>
+    </div>
+
+    <!-- Passenger profile -->
+    <div class="section">
+      <div class="section-label">Passenger profile</div>
+      <div class="field">
+        <span class="field-label">What best describes your typical passenger mix? (select all that apply)</span>
+        <div class="chk-grid" id="chk-clients">
+          <div class="chk-item" onclick="chkToggle(this)"><div class="chk-box"></div>Ultra-high-net-worth individuals</div>
+          <div class="chk-item" onclick="chkToggle(this)"><div class="chk-box"></div>Corporate travellers</div>
+          <div class="chk-item" onclick="chkToggle(this)"><div class="chk-box"></div>Charter passengers</div>
+          <div class="chk-item" onclick="chkToggle(this)"><div class="chk-box"></div>Sports & entertainment</div>
+          <div class="chk-item" onclick="chkToggle(this)"><div class="chk-box"></div>Political / government</div>
+          <div class="chk-item" onclick="chkToggle(this)"><div class="chk-box"></div>Owner-operators</div>
+          <div class="chk-item" onclick="chkToggle(this)"><div class="chk-box"></div>Mixed / varies</div>
+        </div>
+      </div>
+      <div class="field">
+        <span class="field-label">Average passenger dwell time at your FBO?</span>
+        <div class="pill-row" id="r-dwell">
+          <div class="pill" data-g="dwell" data-v="5–15 mins" onclick="pick(this)">5–15 mins</div>
+          <div class="pill" data-g="dwell" data-v="15–30 mins" onclick="pick(this)">15–30 mins</div>
+          <div class="pill" data-g="dwell" data-v="30–60 mins" onclick="pick(this)">30–60 mins</div>
+          <div class="pill" data-g="dwell" data-v="1–3 hours" onclick="pick(this)">1–3 hours</div>
+          <div class="pill" data-g="dwell" data-v="3+ hours" onclick="pick(this)">3+ hours</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seasonality -->
+    <div class="section">
+      <div class="section-label">Seasonality</div>
+      <div class="field">
+        <span class="field-label">Which months are your busiest? (select all that apply)</span>
+        <div class="month-grid" id="chk-months">
+          <div class="month-pill" onclick="monthToggle(this)">Jan</div>
+          <div class="month-pill" onclick="monthToggle(this)">Feb</div>
+          <div class="month-pill" onclick="monthToggle(this)">Mar</div>
+          <div class="month-pill" onclick="monthToggle(this)">Apr</div>
+          <div class="month-pill" onclick="monthToggle(this)">May</div>
+          <div class="month-pill" onclick="monthToggle(this)">Jun</div>
+          <div class="month-pill" onclick="monthToggle(this)">Jul</div>
+          <div class="month-pill" onclick="monthToggle(this)">Aug</div>
+          <div class="month-pill" onclick="monthToggle(this)">Sep</div>
+          <div class="month-pill" onclick="monthToggle(this)">Oct</div>
+          <div class="month-pill" onclick="monthToggle(this)">Nov</div>
+          <div class="month-pill" onclick="monthToggle(this)">Dec</div>
+        </div>
+      </div>
+      <div class="field">
+        <span class="field-label">Are there major events that drive a significant spike in traffic?</span>
+        <textarea id="f-events" placeholder="e.g. Super Bowl, Art Basel Miami, Hamptons summer season, Masters at Augusta, Sundance, Coachella..."></textarea>
+      </div>
+    </div>
+
+    <!-- Local advertising -->
+    <div class="section">
+      <div class="section-label">Local advertising landscape</div>
+      <div class="field">
+        <span class="field-label">Which local businesses or brands do you think would be a natural fit to advertise to your passengers?</span>
+        <textarea id="f-brands" placeholder="e.g. luxury resorts, exotic car rentals, waterfront dining, private estates, wealth management firms, yacht charters..."></textarea>
+      </div>
+      <div class="field">
+        <span class="field-label">Any other comments or context you'd like to share?</span>
+        <textarea id="f-comments" placeholder="Anything else that helps us understand your FBO and its audience..."></textarea>
+      </div>
+    </div>
+
+    <div class="submit-wrap">
+      <button class="submit-btn" id="submit-btn" onclick="submitForm()">Submit response</button>
+      <div class="error-msg" id="error-msg">Something went wrong — please try again or email charlie.rolls@privatejet.media</div>
+    </div>
+  </div>
+
+  <!-- Success screen -->
+  <div id="success-screen">
+    <div class="success-icon">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 11l5 5 9-9"/>
+      </svg>
+    </div>
+    <h2>Thank you</h2>
+    <p>Your response has been received.<br>We'll be in touch shortly.</p>
+  </div>
+
+  <div class="footer">© Private Jet Media</div>
+</div>
+
+<script>
+  function pick(el) {
+    document.querySelectorAll('[data-g="' + el.dataset.g + '"]').forEach(function(x) { x.classList.remove('sel'); });
+    el.classList.add('sel');
+  }
+
+  function chkToggle(el) { el.classList.toggle('sel'); }
+  function monthToggle(el) { el.classList.toggle('sel'); }
+
+  function getChecked(id) {
+    var v = [];
+    document.querySelectorAll('#' + id + ' .chk-item.sel').forEach(function(el) {
+      v.push(el.textContent.trim());
+    });
+    return v.join(', ');
+  }
+
+  function getMonths() {
+    var v = [];
+    document.querySelectorAll('#chk-months .month-pill.sel').forEach(function(el) {
+      v.push(el.textContent.trim());
+    });
+    return v.join(', ');
+  }
+
+  function getPick(g) {
+    var el = document.querySelector('[data-g="' + g + '"].sel');
+    return el ? el.dataset.v : '';
+  }
+
+  function submitForm() {
+    var name = document.getElementById('f-name').value.trim();
+    if (!name) { alert('Please enter the FBO name.'); return; }
+
+    var btn = document.getElementById('submit-btn');
+    btn.classList.add('loading');
+    btn.textContent = 'Submitting…';
+    document.getElementById('error-msg').style.display = 'none';
+
+    var data = {
+      'FBO Name': name,
+      'Airport / ICAO': document.getElementById('f-airport').value.trim() || '—',
+      'City / State': document.getElementById('f-location').value.trim() || '—',
+      'Passenger Mix': getChecked('chk-clients') || '—',
+      'Dwell Time': getPick('dwell') || '—',
+      'Peak Months': getMonths() || '—',
+      'Key Events': document.getElementById('f-events').value.trim() || '—',
+      'Suggested Advertisers': document.getElementById('f-brands').value.trim() || '—',
+      'Additional Comments': document.getElementById('f-comments').value.trim() || '—',
+      '_subject': 'New FBO Response: ' + name,
+      '_replyto': 'charlie.rolls@privatejet.media'
+    };
+
+    fetch('https://formspree.io/f/xeengwap', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(function(res) {
+      if (res.ok) {
+        document.getElementById('form-screen').style.display = 'none';
+        document.getElementById('success-screen').style.display = 'block';
+      } else {
+        throw new Error('failed');
+      }
+    })
+    .catch(function() {
+      btn.classList.remove('loading');
+      btn.textContent = 'Submit response';
+      document.getElementById('error-msg').style.display = 'block';
+    });
+  }
+</script>
+</body>
+</html>
